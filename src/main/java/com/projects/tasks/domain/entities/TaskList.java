@@ -6,25 +6,28 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
+//Annotate class as entity and specify table name
 @Entity
-@Table(name = "tasks")
+@Table(name = "task_lists")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Task {
+public class TaskList {
 
+    //Annotate variable as id column and assign auto-generation for UUID
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", updatable = false, nullable = false)
+    @Column(name = "id", nullable = false, updatable = false)
     private UUID id;
 
-    //Create relation and store foreign key in task_list_id column
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "task_list_id")
-    private TaskList taskList;
-
+    //Create relation and map for taskList in Task.
+    @OneToMany(mappedBy = "taskList", cascade = {
+            CascadeType.REMOVE, CascadeType.PERSIST
+    })
+    private List<Task> tasks;
 
     @Column(name = "title", nullable = false)
     private String title;
@@ -32,20 +35,13 @@ public class Task {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "due_date")
-    private LocalDateTime dueDate;
-
-    @Column(name = "status", nullable = false)
-    private TaskStatus status;
-
-    @Column(name = "priority", nullable = false)
-    private TaskPriority priority;
-
-    @Column(name = "created", updatable = false, nullable = false)
+    @Column(name = "created", nullable = false, updatable = false)
     private LocalDateTime created;
 
     @Column(name = "updated", nullable = false)
     private LocalDateTime updated;
+
+
 
 
 }
