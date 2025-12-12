@@ -23,12 +23,6 @@ public class TaskList {
     @Column(name = "id", nullable = false, updatable = false)
     private UUID id;
 
-    //Create relation and map for taskList in Task.
-    @OneToMany(mappedBy = "taskList", cascade = {
-            CascadeType.REMOVE, CascadeType.PERSIST
-    })
-    private List<Task> tasks;
-
     @Column(name = "title", nullable = false)
     private String title;
 
@@ -41,7 +35,10 @@ public class TaskList {
     @Column(name = "updated", nullable = false)
     private LocalDateTime updated;
 
-
-
+    //Create relation and map for taskList in Task.
+    @OneToMany(mappedBy = "taskList", cascade = {
+            CascadeType.REMOVE, CascadeType.PERSIST
+    })
+    private List<Task> tasks;
 
 }

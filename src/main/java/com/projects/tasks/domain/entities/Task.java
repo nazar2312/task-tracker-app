@@ -20,12 +20,6 @@ public class Task {
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
-    //Create relation and store foreign key in task_list_id column
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "task_list_id")
-    private TaskList taskList;
-
-
     @Column(name = "title", nullable = false)
     private String title;
 
@@ -46,6 +40,11 @@ public class Task {
 
     @Column(name = "updated", nullable = false)
     private LocalDateTime updated;
+
+    //Create relation and store foreign key in task_list_id column
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "task_list_id")
+    private TaskList taskList;
 
 
 }
