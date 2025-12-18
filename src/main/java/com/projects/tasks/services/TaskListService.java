@@ -1,5 +1,6 @@
 package com.projects.tasks.services;
 
+import com.projects.tasks.controllers.TaskListController;
 import com.projects.tasks.domain.dto.TaskListDto;
 import com.projects.tasks.domain.entities.TaskList;
 
@@ -14,4 +15,7 @@ public interface TaskListService {
     TaskList createTaskList(TaskList taskList);
 
     Optional<TaskList> getTaskList(UUID id);
+
+    TaskList updateTaskList(UUID id, TaskList taskList);
+
 }

@@ -1,6 +1,7 @@
 package com.projects.tasks.controllers;
 
 import com.projects.tasks.domain.dto.TaskListDto;
+import com.projects.tasks.domain.entities.Task;
 import com.projects.tasks.domain.entities.TaskList;
 import com.projects.tasks.mappers.TaskListMapper;
 import com.projects.tasks.services.TaskListService;
@@ -44,13 +45,17 @@ public class TaskListController {
     public Optional<TaskListDto> getTaskList(
             @PathVariable("task_list_id") UUID taskListId){
 
-        Optional<TaskListDto> response = service.getTaskList(taskListId).map(mapper::toDto);
+        return service.getTaskList(taskListId).map(mapper::toDto);
+    }
 
-        /*
-            Check if response is empty or null, otherwise return response.
-         */
-        if(response.isEmpty() || response == null) throw new EntityNotFoundException();
+    @PutMapping(path = "/{task_list_id}")
+    public TaskListDto fullUpdateTaskList(
+            @PathVariable("task_list_id") UUID taskListId,
+            @RequestBody TaskListDto newTaskList){
 
-        return response;
+        TaskList updatedTaskList = service.updateTaskList(
+                taskListId,
+                mapper.fromDto(newTaskList));
+        return mapper.toDto(updatedTaskList);
     }
 }
