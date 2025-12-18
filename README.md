@@ -3,7 +3,7 @@
 ### **Technologies**
  
 
-Java / Maven / Spring Boot
+Java / Maven / Spring Boot / Docker / PostgreSQL
 
 
 ### **Note**
