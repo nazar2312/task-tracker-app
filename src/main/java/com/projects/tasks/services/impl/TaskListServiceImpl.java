@@ -76,6 +76,18 @@ public class TaskListServiceImpl implements TaskListService {
         return repository.save(existingTaskList);
     }
 
+    @Override
+    public TaskList deleteTaskList(UUID id) {
+
+        if(repository.findById(id).isEmpty())
+            throw new EntityNotFoundException("Task list does not exists!");
+
+        TaskList deletedTaskList = repository.findById(id).get();
+        repository.deleteById(id);
+
+        return deletedTaskList;
+    }
+
 
 
 

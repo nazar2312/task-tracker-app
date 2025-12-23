@@ -1,11 +1,9 @@
 package com.projects.tasks.controllers;
 
 import com.projects.tasks.domain.dto.TaskListDto;
-import com.projects.tasks.domain.entities.Task;
 import com.projects.tasks.domain.entities.TaskList;
 import com.projects.tasks.mappers.TaskListMapper;
 import com.projects.tasks.services.TaskListService;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -57,5 +55,11 @@ public class TaskListController {
                 taskListId,
                 mapper.fromDto(newTaskList));
         return mapper.toDto(updatedTaskList);
+    }
+
+    @DeleteMapping(path = "/{task_list_id}")
+    public TaskListDto delete(@PathVariable("task_list_id") UUID id){
+
+        return mapper.toDto(service.deleteTaskList(id));
     }
 }
