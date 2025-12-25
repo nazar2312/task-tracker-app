@@ -62,7 +62,6 @@ public class TasksController {
             @RequestBody TaskDto taskDto){
 
         ResponseEntity<Task> response = service.updateTask(taskListId, id, mapper.fromDto(taskDto));
-
         return ResponseEntity.status(HttpStatus.OK).body(mapper.toDto(response.getBody()));
     }
 

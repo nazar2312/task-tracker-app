@@ -17,7 +17,7 @@ public interface TaskService {
 
     Task createTask(UUID taskListId, Task task);
 
-    ResponseEntity<Task> updateTask(UUID taskListId, UUID taskIdToUpdate, Task task);
+    ResponseEntity<Task> updateTask(UUID taskIdToUpdate, UUID taskListId, Task task);
 
     ResponseEntity<Task> deleteTask(UUID taskListId, UUID taskIdToDelete);
 

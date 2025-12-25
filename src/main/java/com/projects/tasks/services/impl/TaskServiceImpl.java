@@ -1,9 +1,7 @@
 package com.projects.tasks.services.impl;
 
-import com.projects.tasks.domain.dto.TaskDto;
 import com.projects.tasks.domain.entities.Task;
 import com.projects.tasks.domain.entities.TaskList;
-import com.projects.tasks.domain.entities.TaskStatus;
 import com.projects.tasks.repositories.TaskListRepository;
 import com.projects.tasks.repositories.TaskRepository;
 import com.projects.tasks.services.TaskService;
@@ -74,45 +72,39 @@ public class TaskServiceImpl implements TaskService {
         return repository.save(taskToSave);
     }
 
-
-
-
-
-
-
-
     @Override
     public ResponseEntity<Task> updateTask(UUID taskListId, UUID taskIdToUpdate, Task task) {
 
-        Optional<Task> taskToUpdate = repository.findTaskByIdAndTaskListId(taskListId, taskIdToUpdate);
+        Task taskToUpdate;
 
-        if(taskToUpdate.isEmpty()) throw new EntityNotFoundException("Task does not exist");
-
-        Task updatedTask = new Task(
-
-                taskToUpdate.get().getId(),
-                task.getTitle(),
-                task.getDescription(),
-                taskToUpdate.get().getDueDate(),
-                task.getStatus(),
-                task.getPriority(),
-                taskToUpdate.get().getCreated(),
-                LocalDateTime.now(),
-                taskToUpdate.get().getTaskList()
-        );
-
-        repository.save(updatedTask);
-
-        return ResponseEntity.status(HttpStatus.OK).body(updatedTask);
+        if(repository.findByTaskListIdAndId(taskListId, taskIdToUpdate).isEmpty())
+            throw new EntityNotFoundException("Task to update is not found!");
+        else
+            taskToUpdate = repository.findByTaskListIdAndId(taskListId, taskIdToUpdate).get();
 
 
+        if(taskToUpdate.getId().equals(task.getId()) || task.getId() == null)
+            taskToUpdate.setId(taskToUpdate.getId());
+        else
+            throw new IllegalArgumentException("Task id cannot be updated!");
 
+
+        taskToUpdate.setTitle(task.getTitle());
+        taskToUpdate.setDescription(task.getDescription());
+        taskToUpdate.setDueDate(task.getDueDate());
+        taskToUpdate.setStatus(task.getStatus());
+        taskToUpdate.setPriority(task.getPriority());
+        taskToUpdate.setUpdated(LocalDateTime.now());
+
+        repository.save(taskToUpdate);
+
+        return ResponseEntity.status(HttpStatus.OK).body(taskToUpdate);
     }
 
     @Override
     public ResponseEntity<Task> deleteTask(UUID taskListId, UUID taskIdToDelete) {
 
-        Optional<Task> taskToDelete = repository.findTaskByIdAndTaskListId(taskListId, taskIdToDelete);
+        Optional<Task> taskToDelete = repository.findByTaskListIdAndId(taskListId, taskIdToDelete);
         if(taskToDelete.isEmpty()) throw new EntityNotFoundException("Task to delete is not found!");
 
         repository.deleteTaskByIdAndTaskListId(taskListId, taskIdToDelete);
