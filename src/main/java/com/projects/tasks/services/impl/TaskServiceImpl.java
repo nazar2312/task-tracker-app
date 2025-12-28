@@ -6,6 +6,7 @@ import com.projects.tasks.repositories.TaskListRepository;
 import com.projects.tasks.repositories.TaskRepository;
 import com.projects.tasks.services.TaskService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -49,8 +50,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
 
+    @Transactional
     @Override
-    public Task createTask(UUID taskListId, Task task) {
+    public void createTask(UUID taskListId, Task task) {
 
         Optional<TaskList> taskList = taskListRepository.findById(taskListId);
 
@@ -69,9 +71,10 @@ public class TaskServiceImpl implements TaskService {
 
         );
 
-        return repository.save(taskToSave);
+        repository.save(taskToSave);
     }
 
+    @Transactional
     @Override
     public ResponseEntity<Task> updateTask(UUID taskListId, UUID taskIdToUpdate, Task task) {
 
@@ -79,8 +82,8 @@ public class TaskServiceImpl implements TaskService {
 
         if(repository.findByTaskListIdAndId(taskListId, taskIdToUpdate).isEmpty())
             throw new EntityNotFoundException("Task to update is not found!");
-        else
-            taskToUpdate = repository.findByTaskListIdAndId(taskListId, taskIdToUpdate).get();
+
+        taskToUpdate = repository.findByTaskListIdAndId(taskListId, taskIdToUpdate).get();
 
 
         if(taskToUpdate.getId().equals(task.getId()) || task.getId() == null)
@@ -101,15 +104,19 @@ public class TaskServiceImpl implements TaskService {
         return ResponseEntity.status(HttpStatus.OK).body(taskToUpdate);
     }
 
+    @Transactional
     @Override
-    public ResponseEntity<Task> deleteTask(UUID taskListId, UUID taskIdToDelete) {
+    public ResponseEntity<Task> deleteTask(UUID taskListId, UUID taskId) {
 
-        Optional<Task> taskToDelete = repository.findByTaskListIdAndId(taskListId, taskIdToDelete);
+        Optional<Task> taskToDelete = repository.findByTaskListIdAndId(taskListId, taskId);
         if(taskToDelete.isEmpty()) throw new EntityNotFoundException("Task to delete is not found!");
 
-        repository.deleteTaskByIdAndTaskListId(taskListId, taskIdToDelete);
+        repository.deleteByTaskListIdAndId(taskListId, taskId);
 
-        return ResponseEntity.status(HttpStatus.OK).body(taskToDelete.get());
+        if(repository.findByTaskListIdAndId(taskListId, taskId).isEmpty())
+            return ResponseEntity.status(HttpStatus.OK).body(taskToDelete.get());
+        else throw new InternalError("Task was not deleted");
+
 
     }
 }

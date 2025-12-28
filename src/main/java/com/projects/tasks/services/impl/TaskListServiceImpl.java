@@ -4,6 +4,7 @@ import com.projects.tasks.domain.entities.TaskList;
 import com.projects.tasks.repositories.TaskListRepository;
 import com.projects.tasks.services.TaskListService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -27,22 +28,22 @@ public class TaskListServiceImpl implements TaskListService {
     }
 
     @Override
-    public TaskList createTaskList(TaskList taskList) {
+    public void createTaskList(TaskList taskList) {
 
         if(taskList.getId() != null)
             throw new IllegalArgumentException("Illegal argument! ID is NOT required!");
         if(taskList.getTitle() == null || taskList.getTitle().isBlank())
             throw new IllegalArgumentException("Incorrect values! Title must be provided!");
 
-        return repository.save(
+        repository.save(
                 new TaskList(
-                null,
-                taskList.getTitle(),
-                taskList.getDescription(),
-                LocalDateTime.now(),
-                LocalDateTime.now(),
-                null
-        ));
+                        null,
+                        taskList.getTitle(),
+                        taskList.getDescription(),
+                        LocalDateTime.now(),
+                        LocalDateTime.now(),
+                        null
+                ));
 
     }
 
@@ -57,6 +58,7 @@ public class TaskListServiceImpl implements TaskListService {
             return response;
     }
 
+    @Transactional
     @Override
     public TaskList updateTaskList(UUID id, TaskList taskList){
 
@@ -76,6 +78,7 @@ public class TaskListServiceImpl implements TaskListService {
         return repository.save(existingTaskList);
     }
 
+    @Transactional
     @Override
     public TaskList deleteTaskList(UUID id) {
 

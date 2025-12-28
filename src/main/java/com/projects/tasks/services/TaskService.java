@@ -1,8 +1,6 @@
 package com.projects.tasks.services;
 
-import com.projects.tasks.domain.dto.TaskDto;
 import com.projects.tasks.domain.entities.Task;
-import com.projects.tasks.domain.entities.TaskList;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -15,7 +13,7 @@ public interface TaskService {
 
     Optional<Task> getTaskById(UUID taskListId, UUID taskId);
 
-    Task createTask(UUID taskListId, Task task);
+    void createTask(UUID taskListId, Task task);
 
     ResponseEntity<Task> updateTask(UUID taskIdToUpdate, UUID taskListId, Task task);
 
