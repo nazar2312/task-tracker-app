@@ -28,14 +28,14 @@ public class TaskListServiceImpl implements TaskListService {
     }
 
     @Override
-    public void createTaskList(TaskList taskList) {
+    public TaskList createTaskList(TaskList taskList) {
 
         if(taskList.getId() != null)
             throw new IllegalArgumentException("Illegal argument! ID is NOT required!");
         if(taskList.getTitle() == null || taskList.getTitle().isBlank())
             throw new IllegalArgumentException("Incorrect values! Title must be provided!");
 
-        repository.save(
+        return repository.save(
                 new TaskList(
                         null,
                         taskList.getTitle(),
@@ -44,7 +44,6 @@ public class TaskListServiceImpl implements TaskListService {
                         LocalDateTime.now(),
                         null
                 ));
-
     }
 
     @Override
@@ -65,17 +64,15 @@ public class TaskListServiceImpl implements TaskListService {
         if(null == taskList.getId())
             throw new IllegalArgumentException("New task must have an ID!");
 
-        if(!Objects.equals(taskList.getId(), id))
-            throw new IllegalArgumentException("Changing task list ID is not permitted!");
-
-        TaskList existingTaskList =  repository.findById(id).orElseThrow(() ->
+        TaskList existingTaskList = repository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("Entity not found"));
 
         existingTaskList.setTitle(taskList.getTitle());
         existingTaskList.setDescription(taskList.getDescription());
         existingTaskList.setTasks(taskList.getTasks());
+        repository.save(existingTaskList);
 
-        return repository.save(existingTaskList);
+        return existingTaskList;
     }
 
     @Transactional
