@@ -61,8 +61,9 @@ public class TasksController {
             @PathVariable("id") UUID id,
             @RequestBody TaskDto taskDto){
 
-        ResponseEntity<Task> response = service.updateTask(taskListId, id, mapper.fromDto(taskDto));
-        return ResponseEntity.status(HttpStatus.OK).body(mapper.toDto(response.getBody()));
+        Task response = service.updateTask(taskListId, id, mapper.fromDto(taskDto));
+
+        return ResponseEntity.status(HttpStatus.OK).body(mapper.toDto(response));
     }
 
     @DeleteMapping(path = "/{id}")
@@ -70,9 +71,9 @@ public class TasksController {
             @PathVariable("task_list_id") UUID taskListId,
             @PathVariable("id") UUID taskId) {
 
-        ResponseEntity<Task> response = service.deleteTask(taskListId, taskId);
+        Task response = service.deleteTask(taskListId, taskId);
 
-        return ResponseEntity.status(HttpStatus.OK).body(mapper.toDto(response.getBody()));
+        return ResponseEntity.status(HttpStatus.OK).body(mapper.toDto(response));
 
     }
 

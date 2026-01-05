@@ -109,7 +109,6 @@ public class TaskListServiceUnitTests {
 
         verify(repository).deleteById(taskList.getId());
 
-
     }
 
 }
