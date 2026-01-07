@@ -11,7 +11,7 @@ public interface TaskService {
 
     List<Task> listAllTasks(UUID taskListId);
 
-    Optional<Task> getTaskById(UUID taskListId, UUID taskId);
+    Task getTaskById(UUID taskListId, UUID taskId);
 
     Task createTask(UUID taskListId, Task task);
 

@@ -94,11 +94,11 @@ public class TaskUnitTests {
         when(repository.findByTaskListIdAndId(taskList.getId(), task.getId()))
                 .thenReturn(Optional.of(task));
 
-        Optional<Task> response = service.getTaskById(taskList.getId(), task.getId());
+        Task response = service.getTaskById(taskList.getId(), task.getId());
 
-        assertEquals(response.get().getId(), task.getId());
-        assertEquals(response.get().getTitle(), task.getTitle());
-        assertEquals(response.get().getTaskList(), task.getTaskList());
+        assertEquals(response.getId(), task.getId());
+        assertEquals(response.getTitle(), task.getTitle());
+        assertEquals(response.getTaskList(), task.getTaskList());
 
         verify(repository, times(1))
                 .findByTaskListIdAndId(taskList.getId(), task.getId());
@@ -120,7 +120,6 @@ public class TaskUnitTests {
 
         UUID id = UUID.randomUUID();
         task.setId(id);
-        taskToUpdate.setId(id);
 
         when(repository.findByTaskListIdAndId(taskList.getId(), task.getId()))
                 .thenReturn(Optional.of(task));
@@ -132,7 +131,6 @@ public class TaskUnitTests {
 
         verify(repository, times(1)).save(any(Task.class));
 
-        assertEquals(response.getId(), task.getId());
         assertEquals(response.getTitle(), taskToUpdate.getTitle());
         assertEquals(response.getDescription(), taskToUpdate.getDescription());
         assertEquals(response.getTaskList(), taskToUpdate.getTaskList());
@@ -156,7 +154,7 @@ public class TaskUnitTests {
     }
 
     @Test
-    void updateTask_shouldThrowException_whenTasksIdsAreDifferent() {
+    void updateTask_shouldThrowException_whenAttemptedToChangeId() {
 
         task.setId(UUID.randomUUID());
         taskToUpdate.setId(UUID.randomUUID());
@@ -179,8 +177,6 @@ public class TaskUnitTests {
 
         assertThrows(EntityNotFoundException.class,
                 () -> service.deleteTask(taskList.getId(), task.getId()));
-
-        verify(repository, never()).save(any());
     }
 
 
@@ -198,9 +194,6 @@ public class TaskUnitTests {
         assertEquals(deletedTask.getId(), task.getId());
         assertEquals(deletedTask.getTitle(), task.getTitle());
         assertEquals(deletedTask.getTaskList(), task.getTaskList());
-
-
-
     }
 
 

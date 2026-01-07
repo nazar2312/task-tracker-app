@@ -51,7 +51,8 @@ public class TasksController {
             @PathVariable("task_list_id") UUID taskListId,
             @PathVariable("id") UUID id) {
 
-        return service.getTaskById(taskListId, id).map(mapper::toDto);
+        return Optional.of(
+                mapper.toDto(service.getTaskById(taskListId, id)));
 
     }
 

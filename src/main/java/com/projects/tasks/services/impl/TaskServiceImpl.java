@@ -37,14 +37,10 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Optional<Task> getTaskById(UUID taskListId, UUID taskId) {
+    public Task getTaskById(UUID taskListId, UUID taskId) {
 
-        Optional<Task> response = repository.findByTaskListIdAndId(taskListId, taskId);
-
-        if(response.isEmpty())
-            throw new EntityNotFoundException("Task does not exist");
-
-        return response;
+        return repository.findByTaskListIdAndId(taskListId, taskId)
+                .orElseThrow(() -> new EntityNotFoundException("Task is not found"));
     }
 
 
@@ -82,11 +78,8 @@ public class TaskServiceImpl implements TaskService {
 
         taskToUpdate = repository.findByTaskListIdAndId(taskListId, taskIdToUpdate).get();
 
-
-        if(taskToUpdate.getId().equals(task.getId()) || task.getId() == null)
-            taskToUpdate.setId(taskToUpdate.getId());
-        else
-            throw new IllegalArgumentException("Task id cannot be updated!");
+        if(task.getId() != null)
+            throw new IllegalArgumentException("Task id cannot be changed/updated!");
 
 
         taskToUpdate.setTitle(task.getTitle());
