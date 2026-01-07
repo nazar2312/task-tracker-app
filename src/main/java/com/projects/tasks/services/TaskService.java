@@ -13,7 +13,7 @@ public interface TaskService {
 
     Optional<Task> getTaskById(UUID taskListId, UUID taskId);
 
-    void createTask(UUID taskListId, Task task);
+    Task createTask(UUID taskListId, Task task);
 
     Task updateTask(UUID taskIdToUpdate, UUID taskListId, Task task);
 

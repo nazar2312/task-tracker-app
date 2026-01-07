@@ -39,7 +39,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Optional<Task> getTaskById(UUID taskListId, UUID taskId) {
 
-        Optional<Task> response = repository.findById(taskId);
+        Optional<Task> response = repository.findByTaskListIdAndId(taskListId, taskId);
 
         if(response.isEmpty())
             throw new EntityNotFoundException("Task does not exist");
@@ -50,7 +50,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Transactional
     @Override
-    public void createTask(UUID taskListId, Task task) {
+    public Task createTask(UUID taskListId, Task task) {
 
         Optional<TaskList> taskList = taskListRepository.findById(taskListId);
 
@@ -66,10 +66,9 @@ public class TaskServiceImpl implements TaskService {
                 LocalDateTime.now(),
                 LocalDateTime.now(),
                 taskList.get()
-
         );
 
-        repository.save(taskToSave);
+        return repository.save(taskToSave);
     }
 
     @Transactional
@@ -109,8 +108,6 @@ public class TaskServiceImpl implements TaskService {
         if(taskToDelete.isEmpty())
             throw new EntityNotFoundException("Task to delete is not found!");
 
-        repository.deleteByTaskListIdAndId(taskListId, taskId);
-
-        return taskToDelete.get();
+        return repository.deleteByTaskListIdAndId(taskListId, taskId);
     }
 }
