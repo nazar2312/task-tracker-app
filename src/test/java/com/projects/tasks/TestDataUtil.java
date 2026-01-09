@@ -17,7 +17,7 @@ public final class TestDataUtil {
     public static TaskList createTaskList(){
 
         return new TaskList(
-                UUID.randomUUID(),
+                null,
                 "TaskList Title for test",
                 "TaskList Description for test",
                 LocalDateTime.now(),
@@ -28,7 +28,7 @@ public final class TestDataUtil {
     public static TaskList createSecondTaskList(){
 
         return new TaskList(
-                UUID.randomUUID(),
+                null,
                 "Second TaskList Title for test",
                 "Second TaskList Description for test",
                 LocalDateTime.now(),

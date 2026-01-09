@@ -32,6 +32,7 @@ public class TaskListServiceImpl implements TaskListService {
 
         if(taskList.getId() != null)
             throw new IllegalArgumentException("Illegal argument! ID is NOT required!");
+
         if(taskList.getTitle() == null || taskList.getTitle().isBlank())
             throw new IllegalArgumentException("Incorrect values! Title must be provided!");
 
@@ -43,7 +44,9 @@ public class TaskListServiceImpl implements TaskListService {
                         LocalDateTime.now(),
                         LocalDateTime.now(),
                         null
-                ));
+                )
+        );
+
     }
 
     @Override
@@ -60,31 +63,34 @@ public class TaskListServiceImpl implements TaskListService {
     @Override
     public TaskList updateTaskList(UUID id, TaskList taskList){
 
-        if(null == taskList.getId())
-            throw new IllegalArgumentException("New task must have an ID!");
-
         TaskList existingTaskList = repository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("Entity not found"));
 
-        existingTaskList.setTitle(taskList.getTitle());
-        existingTaskList.setDescription(taskList.getDescription());
-        existingTaskList.setTasks(taskList.getTasks());
-        repository.save(existingTaskList);
+        if(taskList.getId() != null && id != taskList.getId())
+            throw new IllegalArgumentException("You cannot change an ID!");
 
-        return existingTaskList;
+        return repository.save(new TaskList(
+                null,
+                taskList.getTitle(),
+                taskList.getDescription(),
+                existingTaskList.getCreated(),
+                LocalDateTime.now(),
+                existingTaskList.getTasks()
+        ));
     }
 
     @Transactional
     @Override
     public TaskList deleteTaskList(UUID id) {
 
-        if(repository.findById(id).isEmpty())
+        Optional<TaskList> toDelete = repository.findById(id);
+
+        if(toDelete.isEmpty())
             throw new EntityNotFoundException("Task list does not exists!");
 
-        TaskList deletedTaskList = repository.findById(id).get();
         repository.deleteById(id);
 
-        return deletedTaskList;
+        return toDelete.get();
     }
 
 

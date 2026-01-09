@@ -3,6 +3,7 @@ package com.projects.tasks.services;
 import com.projects.tasks.domain.entities.TaskList;
 import com.projects.tasks.repositories.TaskListRepository;
 import com.projects.tasks.services.impl.TaskListServiceImpl;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,7 +12,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.projects.tasks.TestDataUtil;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -40,74 +40,135 @@ public class TaskListServiceUnitTests {
     }
 
     @Test
-    void testCreateTaskList(){
+    void createTaskList_shouldThrowException_whenIdIsPresent(){
+
+        taskList.setId(UUID.randomUUID());
+
+        assertThrows(IllegalArgumentException.class,
+                () -> service.createTaskList(taskList));
+    }
+
+    @Test
+    void createTaskList_shouldThrowException_whenTitleIsNotPresent() {
+
+        taskList.setTitle("");
+
+        assertThrows(IllegalArgumentException.class,
+                () -> service.createTaskList(taskList));
+    }
+
+    @Test
+    void createTaskList_shouldReturnTaskList_whenAllValuesAreCorrect() {
 
         when(repository.save(any(TaskList.class)))
-                .thenReturn(new TaskList(
-                        UUID.randomUUID(),
-                        taskList.getTitle(),
-                        taskList.getDescription(),
-                        LocalDateTime.now(),
-                        LocalDateTime.now(),
-                        null
-                ));
+                .thenReturn(taskList);
 
-        taskList.setId(null);
-        TaskList result = service.createTaskList(taskList);
+        TaskList savedTaskList = service.createTaskList(taskList);
+
+        assertEquals(taskList.getTitle(), savedTaskList.getTitle());
+
+        verify(repository, times(1)).save(any(TaskList.class));
+
+    }
 
 
-        //Assert that service returns exactly the same object that was created in DB.
-        assertNotEquals(taskList.getId(), result.getId());
-        assertEquals(taskList.getTitle(), result.getTitle());
-        assertEquals(taskList.getDescription(), result.getDescription());
+    @Test
+    void getTaskList_shouldThrowException_whenTaskListIsNotFound() {
 
+        when(repository.findById(any(UUID.class)))
+                .thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class,
+                () -> service.getTaskList(UUID.randomUUID()));
 
     }
 
     @Test
-    void testGetTaskList(){
+    void getTaskList_shouldReturnTaskList_whenAllValuesAreCorrect() {
 
         when(repository.findById(any(UUID.class)))
                 .thenReturn(Optional.of(taskList));
 
-        TaskList result = service.getTaskList(UUID.randomUUID());
+        TaskList returnedTaskList = service.getTaskList(UUID.randomUUID());
 
-        //Assert that result is not found
-
-        //Assert that task list is match the task list that was created
-        assertEquals(result.get().getTitle(), taskList.getTitle());
-        assertEquals(result.get().getDescription(), taskList.getDescription());
+        assertEquals(taskList.getId(), returnedTaskList.getId());
+        assertEquals(taskList.getTitle(), returnedTaskList.getTitle());
 
     }
 
     @Test
-    void testUpdateTaskList(){
+    void updateTaskList_shouldThrowException_whenTaskListIsNotFound() {
+
+        UUID id = UUID.randomUUID();
+
+        when(repository.findById(id))
+                .thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class,
+                () -> service.updateTaskList(id, secondTaskList));
+
+        verify(repository, never()).save(any(TaskList.class));
+    }
+
+    @Test
+    void updateTaskList_shouldThrowException_whenIdsAreDifferent() {
+
+        taskList.setId(UUID.randomUUID());
+        secondTaskList.setId(UUID.randomUUID());
+
+        when(repository.findById(taskList.getId()))
+                .thenReturn(Optional.of(taskList));
+
+        assertThrows(IllegalArgumentException.class,
+                () -> service.updateTaskList(taskList.getId(), secondTaskList));
+
+        verify(repository, never()).save(any(TaskList.class));
+    }
+
+    @Test
+    void updateTaskList_shouldReturnTaskList_whenAllConditionsAreMet() {
+
+        when(repository.findById(taskList.getId()))
+                .thenReturn(Optional.of(taskList));
+
+        when(repository.save(any(TaskList.class)))
+                .thenReturn(secondTaskList);
+
+        TaskList returnedTaskList = service.updateTaskList(taskList.getId(), secondTaskList);
+
+        //Verify that taskList was updated correctly;
+        assertNotEquals(returnedTaskList.getTitle(), taskList.getTitle());
+        assertNotEquals(returnedTaskList.getDescription(), taskList.getDescription());
+
+        verify(repository, times(1)).save(any(TaskList.class));
+
+    }
+
+    @Test
+    void deleteTaskList_shouldThrowException_whenTaskListIsNotFound() {
+
+        when(repository.findById(any(UUID.class)))
+                .thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class,
+                () -> service.deleteTaskList(UUID.randomUUID()));
+
+        verify(repository, never()).deleteById(any(UUID.class));
+
+    }
+
+    @Test
+    void deleteTaskList_shouldReturnDeletedTaskList_whenAllConditionsAreMet() {
 
         when(repository.findById(any(UUID.class)))
                 .thenReturn(Optional.of(taskList));
 
-        TaskList updatedTaskList = service.updateTaskList(taskList.getId(), secondTaskList);
+        TaskList deletedTaskList = service.deleteTaskList(UUID.randomUUID());
 
         verify(repository, times(1))
-                .save(any(TaskList.class));
+                .deleteById(any(UUID.class));
 
-        assertEquals(updatedTaskList.getTitle(), secondTaskList.getTitle());
-        assertEquals(updatedTaskList.getId(), taskList.getId());
-
-    }
-
-    @Test
-    void testDeleteTaskList(){
-
-        when(repository.findById(any(UUID.class)))
-                .thenReturn(Optional.of(taskList));
-
-        TaskList deletedTaskList = service.deleteTaskList(taskList.getId());
-
-        assertEquals(deletedTaskList.getId(), taskList.getId());
-
-        verify(repository).deleteById(taskList.getId());
-
+        assertEquals(deletedTaskList.getTitle(), taskList.getTitle());
     }
 
 }
