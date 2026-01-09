@@ -47,14 +47,13 @@ public class TaskListServiceImpl implements TaskListService {
     }
 
     @Override
-    public Optional<TaskList> getTaskList(UUID id){
+    public TaskList getTaskList(UUID id){
 
         Optional<TaskList> response = repository.findById(id);
 
         if(response.isEmpty()) throw new EntityNotFoundException("not found(((");
 
-        else
-            return response;
+        return response.get();
     }
 
     @Transactional

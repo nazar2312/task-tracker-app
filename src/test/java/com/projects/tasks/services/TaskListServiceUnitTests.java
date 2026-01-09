@@ -70,10 +70,9 @@ public class TaskListServiceUnitTests {
         when(repository.findById(any(UUID.class)))
                 .thenReturn(Optional.of(taskList));
 
-        Optional<TaskList> result = service.getTaskList(UUID.randomUUID());
+        TaskList result = service.getTaskList(UUID.randomUUID());
 
         //Assert that result is not found
-        assertFalse(result.isEmpty());
 
         //Assert that task list is match the task list that was created
         assertEquals(result.get().getTitle(), taskList.getTitle());
