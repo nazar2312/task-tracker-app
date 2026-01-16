@@ -57,7 +57,7 @@ public class TaskUnitTests {
         when(taskListRepository.findById(any(UUID.class)))
                 .thenReturn(Optional.of(taskList));
 
-        Task savedTask = service.createTask(taskList.getId(), task);
+        Task savedTask = service.createTask(UUID.randomUUID(), task);
 
         //verify that service returns exact save task that was saved in db;
         assertEquals(task.getId(), savedTask.getId());

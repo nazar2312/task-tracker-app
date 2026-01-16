@@ -5,6 +5,7 @@ import com.projects.tasks.repositories.TaskListRepository;
 import com.projects.tasks.services.TaskListService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -69,14 +70,12 @@ public class TaskListServiceImpl implements TaskListService {
         if(taskList.getId() != null && id != taskList.getId())
             throw new IllegalArgumentException("You cannot change an ID!");
 
-        return repository.save(new TaskList(
-                null,
-                taskList.getTitle(),
-                taskList.getDescription(),
-                existingTaskList.getCreated(),
-                LocalDateTime.now(),
-                existingTaskList.getTasks()
-        ));
+        existingTaskList.setTitle(taskList.getTitle());
+        existingTaskList.setDescription(taskList.getDescription());
+        existingTaskList.setUpdated(LocalDateTime.now());
+        existingTaskList.setTasks(taskList.getTasks());
+
+        return repository.save(existingTaskList);
     }
 
     @Transactional

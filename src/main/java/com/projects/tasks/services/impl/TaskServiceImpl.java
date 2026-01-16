@@ -33,6 +33,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<Task> listAllTasks(UUID taskListId) {
+
         return repository.findByTaskListId(taskListId);
     }
 

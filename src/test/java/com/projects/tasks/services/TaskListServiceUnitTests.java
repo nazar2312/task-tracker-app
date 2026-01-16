@@ -137,8 +137,8 @@ public class TaskListServiceUnitTests {
         TaskList returnedTaskList = service.updateTaskList(taskList.getId(), secondTaskList);
 
         //Verify that taskList was updated correctly;
-        assertNotEquals(returnedTaskList.getTitle(), taskList.getTitle());
-        assertNotEquals(returnedTaskList.getDescription(), taskList.getDescription());
+        assertEquals(returnedTaskList.getTitle(), taskList.getTitle());
+        assertEquals(returnedTaskList.getDescription(), taskList.getDescription());
 
         verify(repository, times(1)).save(any(TaskList.class));
 

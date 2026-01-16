@@ -75,7 +75,6 @@ public class TasksController {
         Task response = service.deleteTask(taskListId, taskId);
 
         return ResponseEntity.status(HttpStatus.OK).body(mapper.toDto(response));
-
     }
 
 

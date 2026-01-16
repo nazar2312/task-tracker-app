@@ -64,6 +64,6 @@ public class TaskListController {
 
         TaskListDto body = mapper.toDto(service.deleteTaskList(id));
 
-        return ResponseEntity.status(HttpStatus.OK).body(body);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(body);
     }
 }
