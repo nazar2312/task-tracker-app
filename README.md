@@ -1,10 +1,36 @@
-## Task Tracker
+## Task Tracker API 
+![Java](https://img.shields.io/badge/Java-21-orange)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.3-green)
+![Coverage](https://img.shields.io/badge/coverage-92%25-brightgreen)
 
 
 ### **Technologies**
- 
 
-Java / Maven / Spring Boot / Docker / PostgreSQL
+#### **Essentials**
+- **Java 21** 
+- **Spring Boot 3.5.3**
+
+#### **Data Storing**
+- **Spring Data JPA** - Database operation
+- **PostgreSQL** - Production database
+- **H2** - In-memory database for testing
+
+#### **Testing**
+- **JUnit5** - Testing framework
+- **Mockito** - Mocking framework
+
+#### **Other tools**
+- **Lombok** - Reduce boilerplate code
+- **Maven** - Dependency management
+- **Docker** - Containerization
+- **Git** - Version control
+
+## **API Documentation**
+
+docker-compose up -> mvn run -> xhttp://localhost:8080/swagger-ui.html
+
+
+
 
 
 ### **Note**

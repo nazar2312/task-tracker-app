@@ -2,7 +2,6 @@ package com.projects.tasks.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.projects.tasks.TestDataUtil;
-import com.projects.tasks.domain.dto.TaskDto;
 import com.projects.tasks.domain.entities.Task;
 import com.projects.tasks.domain.entities.TaskList;
 import com.projects.tasks.repositories.TaskListRepository;
