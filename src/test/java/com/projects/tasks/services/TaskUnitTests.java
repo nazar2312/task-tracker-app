@@ -187,7 +187,7 @@ public class TaskUnitTests {
                 .thenReturn(Optional.of(task));
 
         when(repository.deleteByTaskListIdAndId(taskList.getId(), task.getId()))
-                .thenReturn(task);
+                .thenReturn(1);
 
         Task deletedTask = service.deleteTask(taskList.getId(), task.getId());
 

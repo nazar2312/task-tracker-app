@@ -47,13 +47,14 @@ public class TasksController {
     }
 
     @GetMapping(path = "/{id}")
-    public Optional<TaskDto> findById(
+    public ResponseEntity<TaskDto> findById(
             @PathVariable("task_list_id") UUID taskListId,
             @PathVariable("id") UUID id) {
 
-        return Optional.of(
-                mapper.toDto(service.getTaskById(taskListId, id)));
+        TaskDto response = mapper.toDto(service.getTaskById(taskListId, id));
 
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(response);
     }
 
     @PatchMapping(path = "/{id}")
@@ -74,7 +75,7 @@ public class TasksController {
 
         Task response = service.deleteTask(taskListId, taskId);
 
-        return ResponseEntity.status(HttpStatus.OK).body(mapper.toDto(response));
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(mapper.toDto(response));
     }
 
 

@@ -1,5 +1,6 @@
 package com.projects.tasks;
 
+import com.projects.tasks.domain.dto.TaskDto;
 import com.projects.tasks.domain.entities.Task;
 import com.projects.tasks.domain.entities.TaskList;
 import com.projects.tasks.domain.entities.TaskPriority;
@@ -63,6 +64,17 @@ public final class TestDataUtil {
                 LocalDateTime.of(1233, 1, 1 , 1 , 1),
                 LocalDateTime.of(2004, 1, 1 , 1 , 1),
                 null
+        );
+    }
+
+    public static TaskDto createTaskDto() {
+        return new TaskDto(
+                null,
+                "UpdatedTitle",
+                "Updated Description",
+                LocalDateTime.of(1234, 1, 1 , 1 , 1),
+                TaskPriority.LOW,
+                TaskStatus.OPEN
         );
     }
 

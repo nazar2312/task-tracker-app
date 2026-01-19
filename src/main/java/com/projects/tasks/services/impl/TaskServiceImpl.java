@@ -102,6 +102,9 @@ public class TaskServiceImpl implements TaskService {
         if(taskToDelete.isEmpty())
             throw new EntityNotFoundException("Task to delete is not found!");
 
-        return repository.deleteByTaskListIdAndId(taskListId, taskId);
+        int result = repository.deleteByTaskListIdAndId(taskListId, taskId);
+
+        if(result != 1) throw new IllegalArgumentException();
+        else return taskToDelete.get();
     }
 }
