@@ -26,8 +26,10 @@
 - **Git** - Version control
 
 ## **API Documentation**
-
-docker-compose up -> mvn run -> xhttp://localhost:8080/swagger-ui.html
+- open terminal ->
+- docker-compose up -> 
+- mvn spring-boot:run -> 
+- http://localhost:8080/swagger-ui.html
 
 
 
